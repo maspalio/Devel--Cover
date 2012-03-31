@@ -415,6 +415,57 @@ __END__
 
 Devel::Cover::Test - Internal module for testing
 
+=head1 SYNOPSIS
+
+This the test workhorse class.
+
+Due to its very nature, Devel::Cover test scheme is a bit non-conventional.
+
+There are mainly two kinds of tests, namely end-to-end (aka "e2e") and regular
+ones (currently "internal" and "regexp"). End-to-end tests in turn fall into two
+different categories, namely regular and special. Former actually test and cover a
+code file while latter may perform more fancy operations like file changes
+on-the-fly (hence the run_test/end properties used by some methods).
+
+=head2 End-to-end, regular tests
+
+To add a test, first create a code file in F<tests> directory. For example:
+
+    % cp tests/trivial tests/foo
+    # alter tests/foo
+
+To make a dry-run:
+
+    % make text TEST=foo
+    # check out foo.out
+
+Possibly generate a golden file b<for your current Perl version> via
+F<utils/create_gold> tool:
+
+    % make gold TEST=foo
+    # check out test_output/cover/foo.$]
+
+Beware! Does not work with a Perl interpreter compile with -Dusethreads option.
+It is taken for granted the minimum lineup of Perls (see below) was compiled
+without threading option.
+
+Then, provided you have a minimum lineup of Perl installs, run:
+
+    % make all_gold TEST=foo
+
+Creates F<test_output/cover/foo.*> files.
+
+Minimum set of Perls currently is: 5.8.8, 5.8.9, 5.10.0, 5.10.1, 5.12.3, & 5.14.2.
+
+Rationale is, of course, backwards compatibility for coverage output is likely to
+vary across Perl versions. F<utils/create_all_gold> tool actually reduces the number
+of golden files as much as possible (i.e., it only keeps versions when a change
+actually occurs). 
+
+=head2 End-to-end, fancy tests
+
+FIXME
+
 =head1 METHODS
 
 =cut
