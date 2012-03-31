@@ -432,6 +432,13 @@ Supported tokens are "statement", "branch", "condition", "subroutine" and
 
 More optional parameters are supported. Refer to L</get_params> sub.
 
+=head2 get_params
+
+  $self->get_params ()
+
+Sidekick routine for L</new> constructor.
+Post-processes possibly non-defined object properties to set sensible defaults.
+
 =head2 shell_quote
 
   my $quoted_item = shell_quote($item)
@@ -500,11 +507,41 @@ version number.
 $base comes from the name of the test and $v will be $] from the earliest perl
 version for which the golden results should be the same as for the current $]
 
+=head2 create_gold
+
+  $self->create_gold();
+
+Called from F<utils/create_gold> point-tool, in turn called by F<Makefile.PL>.
+
+Runs test, run cover and munges output to create golden file. Last, invokes
+end property sub if defined.
+
 =head2 run_command
 
   $self->run_command($command)
 
 Runs command, most likely obtained from L</test_command> sub.
+
+=head2 run_test
+
+  $self->run_test();
+
+Run test from either run_test property sub if defined or default
+L<run_command> sub, then invokes L</run_cover> sub. Last, invokes
+end property sub if defined.
+
+Uses L<Test::Differences> module if applicable.
+
+Skips test in skip property is set.
+
+=head2 run_cover
+
+  $self->run_cover();
+
+Runs cover command (from eponymous L</cover_command> sub) then munges
+the output to enable comparison with golden (see L<create_gold> sub) result.
+
+Does nothing if no_coverage property is true.
 
 =head1 BUGS
 
